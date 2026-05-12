@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}EGO — Leave your ego at the door{% endblock %}
+
+{% block content %}
+<section class="landing">
+
+  <h1 class="landing-logo">EGO</h1>
+  <p class="landing-tagline">LEAVE YOUR EGO AT THE DOOR</p>
+
+  {% if error %}
+    <p class="landing-error">{{ error }}</p>
+  {% endif %}
+
+  {% if logged_in %}
+    <a href="{{ url_for('playlists') }}" class="btn btn--primary">YOUR PLAYLISTS →</a>
+  {% else %}
+    <a href="{{ url_for('login') }}" class="btn btn--primary">CONNECT WITH SPOTIFY</a>
+  {% endif %}
+
+  <p class="landing-hint">Sequence your playlist. Own the floor.</p>
+
+</section>
+{% endblock %}

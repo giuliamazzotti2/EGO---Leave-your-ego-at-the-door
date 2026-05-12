@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% set logged_in = true %}
+
+{% block title %}EGO — Your Playlists{% endblock %}
+
+{% block content %}
+<section class="page-section">
+
+  <header class="page-header">
+    <h2 class="page-title">YOUR PLAYLISTS</h2>
+    {% if user %}
+      <span class="page-subtitle">{{ user.display_name }}</span>
+    {% endif %}
+  </header>
+
+  {% if error %}
+    <p class="error-msg">{{ error }}</p>
+  {% endif %}
+
+  {% if playlists %}
+    <div class="playlist-grid">
+      {% for pl in playlists %}
+        <a href="{{ url_for('sequencer', playlist_id=pl.id) }}" class="playlist-card">
+          <div class="playlist-card__cover">
+            {% if pl.cover %}
+              <img src="{{ pl.cover }}" alt="{{ pl.name }}" loading="lazy" />
+            {% else %}
+              <div class="playlist-card__cover-placeholder">♫</div>
+            {% endif %}
+          </div>
+          <div class="playlist-card__info">
+            <p class="playlist-card__name">{{ pl.name }}</p>
+            <p class="playlist-card__meta mono">{{ pl.n_tracks }} TRACKS &nbsp;·&nbsp; {{ pl.owner }}</p>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="empty-state">No playlists found.</p>
+  {% endif %}
+
+</section>
+{% endblock %}

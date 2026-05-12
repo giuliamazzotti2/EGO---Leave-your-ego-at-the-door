@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}EGO{% endblock %}</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23080808'/><text x='50%25' y='74%25' font-family='sans-serif' font-weight='700' font-size='22' fill='%23B400FF' text-anchor='middle'>E</text></svg>">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="{{ url_for('index') }}" class="navbar-logo">EGO</a>
+    <div class="navbar-right">
+      {% if logged_in is defined and logged_in %}
+        <a href="{{ url_for('playlists') }}" class="nav-link">PLAYLISTS</a>
+        <a href="{{ url_for('logout') }}" class="nav-link nav-link--muted">LOGOUT</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

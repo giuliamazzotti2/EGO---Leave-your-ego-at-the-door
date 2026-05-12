@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% set logged_in = true %}
+
+{% block title %}EGO — {{ playlist.name if playlist else 'Sequencer' }}{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<section class="page-section">
+
+  {% if error %}
+    <div class="error-banner">{{ error }}</div>
+  {% elif playlist %}
+
+  <div class="sequencer-layout">
+
+    <!-- LEFT: track list -->
+    <div class="seq-left">
+      <header class="seq-panel-header">
+        <span class="seq-panel-label">TRACKS</span>
+        <span class="seq-panel-count mono" id="track-count">{{ tracks | length }}</span>
+      </header>
+      <ul class="track-list" id="track-list">
+        {% for t in tracks %}
+        <li class="track-item" data-id="{{ t.id }}">
+          <span class="track-num mono">{{ loop.index }}</span>
+          {% if t.cover %}
+            <img class="track-cover" src="{{ t.cover }}" alt="" loading="lazy" />
+          {% else %}
+            <div class="track-cover track-cover--empty"></div>
+          {% endif %}
+          <div class="track-info">
+            <span class="track-name">{{ t.name }}</span>
+            <span class="track-artist">{{ t.artist }}</span>
+          </div>
+          <span class="track-bpm mono">{{ "%.0f"|format(t.tempo) }} BPM</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- RIGHT: controls + chart -->
+    <div class="seq-right">
+      <header class="seq-panel-header">
+        <h2 class="seq-playlist-name">{{ playlist.name }}</h2>
+        <span class="seq-panel-count mono">{{ playlist.n_tracks }} TRACKS</span>
+      </header>
+
+      <div class="seq-section-label">SEQUENCE MODE</div>
+      <div class="algo-buttons" id="algo-buttons">
+        <button class="algo-btn" data-algo="bpm_ascending">BPM ASCENDING</button>
+        <button class="algo-btn" data-algo="energy_ascending">ENERGY ASCENDING</button>
+        <button class="algo-btn" data-algo="peak_and_drop">PEAK &amp; DROP</button>
+        <button class="algo-btn" data-algo="valence_ascending">VALENCE</button>
+        <button class="algo-btn" data-algo="smart_mix">SMART MIX</button>
+      </div>
+
+      <div class="chart-wrapper">
+        <canvas id="energy-chart"></canvas>
+      </div>
+
+      <div class="seq-actions">
+        <button class="btn btn--primary btn--large" id="go-result-btn" disabled>
+          SEQUENCE →
+        </button>
+        <span class="seq-status" id="seq-status"></span>
+      </div>
+
+    </div>
+  </div>
+
+  {% endif %}
+</section>
+
+<!-- Pass original track data to JS -->
+<script id="tracks-data" type="application/json">
+{{ tracks | tojson }}
+</script>
+<script id="playlist-id-data" type="application/json">
+{{ (playlist.id if playlist else '') | tojson }}
+</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% set logged_in = true %}
+
+{% block title %}EGO — Sequence Ready{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<section class="page-section">
+
+  <header class="page-header">
+    <h2 class="page-title">SEQUENCE READY</h2>
+    <span class="page-subtitle">{{ playlist_name }}</span>
+  </header>
+
+  <div class="result-chart-wrapper">
+    <canvas id="compare-chart"></canvas>
+  </div>
+
+  <div class="result-layout">
+
+    <!-- ORIGINAL -->
+    <div class="result-col">
+      <div class="result-col-header">ORIGINAL</div>
+      <ul class="track-list track-list--result">
+        {% for t in original %}
+        <li class="track-item">
+          <span class="track-num mono">{{ loop.index }}</span>
+          <div class="track-info">
+            <span class="track-name">{{ t.name }}</span>
+            <span class="track-artist">{{ t.artist }}</span>
+          </div>
+          <span class="track-bpm mono">{{ "%.0f"|format(t.tempo) }} BPM</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- SEQUENCED -->
+    <div class="result-col">
+      <div class="result-col-header result-col-header--accent">SEQUENCED &nbsp;<span class="algo-badge">{{ algorithm | upper | replace("_", " ") }}</span></div>
+      <ul class="track-list track-list--result">
+        {% for t in sequenced %}
+        <li class="track-item track-item--sequenced">
+          <span class="track-num mono">{{ loop.index }}</span>
+          <div class="track-info">
+            <span class="track-name">{{ t.name }}</span>
+            <span class="track-artist">{{ t.artist }}</span>
+          </div>
+          <span class="track-bpm mono">{{ "%.0f"|format(t.tempo) }} BPM</span>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- Save actions -->
+  <div class="result-actions">
+    <button class="btn btn--primary btn--large" id="btn-save-new">SAVE AS NEW</button>
+    <button class="btn btn--ghost btn--large" id="btn-save-overwrite">SAVE TO SPOTIFY</button>
+    <a href="{{ url_for('sequencer', playlist_id=playlist_id) }}" class="btn btn--ghost btn--large">← BACK</a>
+  </div>
+
+  <div class="save-feedback" id="save-feedback"></div>
+
+</section>
+
+<script id="original-data" type="application/json">{{ original | tojson }}</script>
+<script id="sequenced-data" type="application/json">{{ sequenced | tojson }}</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<script>
+  initResultPage();
+</script>
+{% endblock %}
